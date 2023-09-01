@@ -74,6 +74,7 @@
 		]
 	},
 	"dependencies": {
+		"mdb-react-ui-kit": "^6.2.0",
 		"prop-types": "^15.7.2",
 		"query-string": "^7.0.1",
 		"react": "^18.2.0",
