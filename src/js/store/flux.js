@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -16,12 +18,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			], 
+			],
 
 			characters: []
 			,
 
-			vehiculos: []
+			vehiculos: [],
+
+			auth: false
 
 		},
 		actions: {
@@ -30,9 +34,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().changeColor(0, "green");
 			},
 			obtenerVehiculosClaudia: async () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
+
 				try {
 					let response = await fetch("https://swapi.dev/api/vehicles", {
 						method: "GET"
@@ -57,11 +59,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					let response = await fetch("https://swapi.dev/api/people"); //especificamos la url donde vamos a buscar info
 					let data = await response.json()
 					console.log(data);
-					setStore({characters: data.results})
-					
+					setStore({ characters: data.results })
+
 				} catch (error) {
 					console.log(error)
-					
+
 				}
 			},
 			obtenerplanetas: async function () {
@@ -70,25 +72,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 					let response = await fetch("https://swapi.dev/api/planets"); //esto me regresa una respuesta, que la guerdo en un espacio de memoira
 					//le digo que espere por esa respuesta
 					let data = await response.json(); //le digo que convierta esa respuesta en un jason y lo guardo en un espacio de memoira y que espere por la convercion de esa respuesta
-					console.log(data);
+					// console.log(data);
 					setStore({ Planets: data.results }); //({propiedad:el valor que quiero actuaizar})
 				} catch (error) {
 					console.log(error);
 				}
 			},
 			agregarFavorito: (name) => {
-				
-			
+
+
 				setStore({ favoritos: [...getStore().favoritos, name] });
-								
-					
-			
+
+
+
 			},
-			eliminarFavorito:(name)=>{
-				const arr= getStore().favoritos.filter((name2)=>
-				name2!==name)
-				setStore({ favoritos: arr});
-				
+			eliminarFavorito: (name) => {
+				const arr = getStore().favoritos.filter((name2) =>
+					name2 !== name)
+				setStore({ favoritos: arr });
+
 			},
 			getDetails: async (type, id) => {
 				/**
@@ -121,9 +123,85 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
+			},
 
-			
+			login: async (email, password) => {
+				console.log(email, password);
+				try {
+					let data = await axios.post("https://studious-computing-machine-x5ww7799947vf6qqv-3000.app.github.dev/login", {
+
+						"email": email,
+						"password": password
+					})
+
+					console.log(data);
+
+					localStorage.setItem("token", data.data.access_token);
+					return true;
+
+
+
+				} catch (error) {
+					console.log(error)
+					if (error.response.status === 404) {
+						alert (error.response.data.msg)
+						
+					}
+					return false;
+				}
+
+			},
+
+			singup: async (name, apellido, email, password) => {
+				console.log(email, password, name, apellido);
+				try {
+					let data = await axios.post("https://studious-computing-machine-x5ww7799947vf6qqv-3000.app.github.dev/sing_up", {
+
+						"name": name,
+						"apellido": apellido,
+						"email": email,
+						"password": password
+					})
+					console.log(data);
+					return true;
+
+				} catch (error) {
+					console.log(error)
+					if (error.response.status === 404) {
+						alert (error.response.data.msg)
+						
+					}
+					return false;
+				}
+
+			},
+
+			validToken: async () => {
+				
+				try {
+					let data = await axios.post("https://studious-computing-machine-x5ww7799947vf6qqv-3000.app.github.dev/valid-token", {
+
+						headers: {"Authorization": "Bearer" + token}
+					})
+
+					console.log(data);
+					setStore({auth: true})
+					return true;
+					
+					
+				} catch (error) {
+					console.log(error)
+					if (error.response.status > 400 ) {
+						setStore({auth: false})
+						alert(error.response.data.msg)
+						
+					}
+					return false;
+				}
+
+			},
+
+
 
 		}
 	};

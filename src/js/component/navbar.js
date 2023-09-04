@@ -32,6 +32,7 @@ export const Navbar = () => {
           ))}
         </ul>
       </div>
+        {store.auth ?   <button class="btn btn-primary me-2">Log Out</button>: null}
     </nav>
   );
 };

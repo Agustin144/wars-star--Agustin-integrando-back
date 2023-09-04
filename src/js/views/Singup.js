@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Context } from '../store/appContext';
 import {
   MDBBtn,
   MDBContainer,
@@ -13,7 +15,24 @@ import {
 from 'mdb-react-ui-kit';
 
 function Singup() {
+  const [lastName,setLastName]= useState("")
+  const [firstName,setFirstName]= useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const { store, actions } = useContext(Context)
+  const navigate= useNavigate();
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    // actions.singup(firstName, lastName, email, password)
+    let logged = await actions.singup(firstName, lastName, email, password)
+    if (logged === true) {
+      navigate("/login")
+
+    } }
+
   return (
+    <form onSubmit={handleSubmit}>
     <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden'>
 
       <MDBRow>
@@ -38,18 +57,18 @@ function Singup() {
 
               <MDBRow>
                 <MDBCol col='6'>
-                  <MDBInput wrapperClass='mb-4' label='First name' id='form1' type='text'/>
+                  <MDBInput wrapperClass='mb-4'onChange={(e) => setFirstName(e.target.value)} label='First name' id='form1' type='text'/>
                 </MDBCol>
 
                 <MDBCol col='6'>
-                  <MDBInput wrapperClass='mb-4' label='Last name' id='form2' type='text'/>
+                  <MDBInput wrapperClass='mb-4'onChange={(e) => setLastName(e.target.value)} label='Last name' id='form2' type='text'/>
                 </MDBCol>
               </MDBRow>
 
-              <MDBInput wrapperClass='mb-4' label='Email' id='form3' type='email'/>
-              <MDBInput wrapperClass='mb-4' label='Password' id='form4' type='password'/>
+              <MDBInput wrapperClass='mb-4'onChange={(e) => setEmail(e.target.value)} label='Email' id='form3' type='email'/>
+              <MDBInput wrapperClass='mb-4'onChange={(e) => setPassword(e.target.value)} label='Password' id='form4' type='password'/>
 
-            
+
 
               <MDBBtn className='w-100 mb-4' size='md'>sign up</MDBBtn>
 
@@ -62,6 +81,7 @@ function Singup() {
       </MDBRow>
 
     </MDBContainer>
+    </form>
   );
 }
 

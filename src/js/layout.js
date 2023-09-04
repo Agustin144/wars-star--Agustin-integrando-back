@@ -7,7 +7,7 @@ import { Demo } from "./views/demo";
 import { Details } from "./views/Details";
 import { Single } from "./views/single";
 import injectContext from "./store/appContext";
-import Login from "./views/Login"
+import {Login} from "./views/Login"
 import Singup from "./views/Singup"
 
 import { Navbar } from "./component/navbar";
