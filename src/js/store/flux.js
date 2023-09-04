@@ -135,6 +135,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 
 					console.log(data);
+					setStore({auth: true})
 
 					localStorage.setItem("token", data.data.access_token);
 					return true;
@@ -200,6 +201,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
+
+			logOut: async ()=>{
+				localStorage.removeItem("token")
+				setStore({auth: true})
+			}
 
 
 

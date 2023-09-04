@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import navbar from "../../styles/navbar.css";
+import { useNavigate } from 'react-router-dom';
 export const Navbar = () => {
 
   const { store, actions } = useContext(Context);
@@ -13,10 +14,17 @@ export const Navbar = () => {
 
   }, [])
   // console.log(listaFavoritos);
+  const navigate= useNavigate();
+  
+  const handleLogout=()=>{
+    actions.logOut()
+    navigate("/login")
 
+  }
   return (
     <nav className="navbar navbar-light bg-light mb-3 sticky-top nav">
       <img id="local-nav-logo-desktop" className="d-flex ms-5 " style={{ width: "100px" }} src="https://logos-marcas.com/wp-content/uploads/2020/11/Star-Wars-Logo.png" />
+      {store.auth &&   <button class="btn btn-primary me-2 "onClick={handleLogout}>Log Out</button>}
       <div className="nav-item dropdown">
         <a className="nav-link dropdown-toggle btn btn-primary boton " style={{color: "black"}} role="button" data-bs-toggle="dropdown" aria-expanded="false">
           Favorites <span className="badge text-bg-secondary ">{store.favoritos.length}</span>
@@ -32,7 +40,7 @@ export const Navbar = () => {
           ))}
         </ul>
       </div>
-        {store.auth ?   <button class="btn btn-primary me-2">Log Out</button>: null}
+        
     </nav>
   );
 };
