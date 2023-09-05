@@ -41,7 +41,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 
 					let data = await response.json();
-					console.log(data.results);
+					
 					setStore({ vehiculos: data.results });
 
 
@@ -58,7 +58,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch("https://swapi.dev/api/people"); //especificamos la url donde vamos a buscar info
 					let data = await response.json()
-					console.log(data);
+					
 					setStore({ characters: data.results })
 
 				} catch (error) {
@@ -126,7 +126,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			login: async (email, password) => {
-				console.log(email, password);
+				
 				try {
 					let data = await axios.post("https://studious-computing-machine-x5ww7799947vf6qqv-3000.app.github.dev/login", {
 
@@ -134,7 +134,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 
-					console.log(data);
+					
 					setStore({auth: true})
 
 					localStorage.setItem("token", data.data.access_token);
@@ -143,7 +143,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 				} catch (error) {
-					console.log(error)
+					
 					if (error.response.status === 404) {
 						alert (error.response.data.msg)
 						
@@ -167,7 +167,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return true;
 
 				} catch (error) {
-					console.log(error)
+					
 					if (error.response.status === 404) {
 						alert (error.response.data.msg)
 						
@@ -178,23 +178,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			validToken: async () => {
-				
+				let token= localStorage.getItem("token")
 				try {
-					let data = await axios.post("https://studious-computing-machine-x5ww7799947vf6qqv-3000.app.github.dev/valid-token", {
+					let data = await axios.get("https://studious-computing-machine-x5ww7799947vf6qqv-3000.app.github.dev/valid-token", {
 
-						headers: {"Authorization": "Bearer" + token}
+						headers: {"Authorization": "Bearer " + token}
 					})
 
-					console.log(data);
+					
 					setStore({auth: true})
 					return true;
 					
 					
 				} catch (error) {
-					console.log(error)
+					
 					if (error.response.status > 400 ) {
 						setStore({auth: false})
-						alert(error.response.data.msg)
+						
 						
 					}
 					return false;
@@ -202,16 +202,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			},
 
-			logOut: async ()=>{
+			logOut:()=>{
 				localStorage.removeItem("token")
-				setStore({auth: true})
-			}
+				setStore({auth: false})
+			},
+
+
+			favoritosDeUsuario: async () => {
+				let token= localStorage.getItem("token")
+				
+				try {
+					let data = await axios.get("https://studious-computing-machine-x5ww7799947vf6qqv-3000.app.github.dev/user/favoritos", {
+						headers: {"Authorization": "Bearer " + token}
+
+					})
+					 
+					console.log(data.data.results);
+					setStore({ favoritos: data.data.results });
+					return true;
+
+					
+					
+				} catch (error) {
+					console.log(error);
+					
+						return false;
+					}
+				}
+
+			},
 
 
 
 		}
 	};
-};
+
 
 export default getState;
 
